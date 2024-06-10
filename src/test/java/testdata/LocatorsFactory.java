@@ -1,8 +1,14 @@
 package testdata;
 
+import java.time.Duration;
+
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 
 
@@ -53,30 +59,251 @@ public class LocatorsFactory {
 	By manageRoleTab = By.xpath("//a[.='Manage Role']");
 	By tooltipText = By.xpath("//li[contains(text(),'+')]");
 
-	public CommonEvents commonEvents;
+	//public CommonEvents commonEvents;
 	public WebDriver driver;
 	public LocatorsFactory(WebDriver driver) {
 		
 		this.driver = driver;
-		commonEvents = new CommonEvents(driver);
+		//commonEvents = new CommonEvents(driver);
+	}
+	
+	public void waitTillElementVisible(WebElement element, long seconds) {
+		new WebDriverWait(driver, Duration.ofSeconds(seconds))
+		.until(ExpectedConditions.visibilityOf(element));
+		
+	}
+	
+	public void waitTillElementVisible(By by, long seconds) {
+		new WebDriverWait(driver, Duration.ofSeconds(seconds))
+		.until(ExpectedConditions.visibilityOf(getWebElement(by)));
+	}
+	
+	public boolean isDisplayed(By by)
+	{
+		boolean flag = false;
+		try
+		{
+			waitTillElementVisible(by, 60);
+			if(getWebElement(by).isDisplayed())
+				flag = true;
+		}catch(Exception e)
+		{
+			flag = false;
+		}
+
+		return flag;
+	}
+	
+	public boolean isDisplayed(By by, int seconds)
+	{
+		boolean isDisplayed = false;
+		try
+		{
+			waitTillElementVisible(by, seconds);
+			isDisplayed = true;
+		}
+		catch(Exception e)
+		{
+			isDisplayed = false;
+		}
+		return isDisplayed;
+	}
+	
+	public boolean isDisplayed(WebElement element, int seconds)
+	{
+		boolean isDisplayed = false;
+		try
+		{
+			waitTillElementVisible(element, seconds);
+			isDisplayed = true;
+		}
+		catch(Exception e)
+		{
+			isDisplayed = false;
+		}
+		return isDisplayed;
+	}
+	
+	public void waitTillPageLoad(WebElement element, int seconds, String pageName) throws Exception
+	{
+		int count = 1;
+		boolean isDisplayed = false;
+		boolean noActive = false;
+		boolean ajaxIsComplete = false;
+
+		while(count<=seconds) 
+		{
+			ajaxIsComplete = (boolean) ((JavascriptExecutor) driver).executeScript("return document.readyState")
+					.toString()
+					.equals("complete");
+			if(ajaxIsComplete) 
+			{
+				try
+				{
+					noActive = (boolean)((JavascriptExecutor) driver).executeScript("return jQuery.active==0;");
+					isDisplayed = isDisplayed(element, 1);
+				}
+				catch(Exception e)
+				{
+					isDisplayed = isDisplayed(element, 1);
+				}
+
+
+				if (noActive || isDisplayed)
+					break;
+				else
+					count++;
+			}
+			else
+				count++;
+		}
+		if(count>seconds)
+			throw new Exception("The ajax calls for "+pageName+" could not be completed in "+seconds+" seconds");
+		
+	}
+	
+	public void waitTillPageLoad(By by, int seconds, String pageName) throws Exception
+	{
+		int count = 1;
+		boolean isDisplayed = false;
+		boolean noActive = false;
+		boolean ajaxIsComplete = false;
+
+		while(count<=seconds) 
+		{
+			ajaxIsComplete = (boolean) ((JavascriptExecutor) driver).executeScript("return document.readyState")
+					.toString()
+					.equals("complete");
+			if(ajaxIsComplete) 
+			{
+				try
+				{
+					noActive = (boolean)((JavascriptExecutor) driver).executeScript("return jQuery.active==0;");
+					isDisplayed = isDisplayed(by, 1);
+				}
+				catch(Exception e)
+				{
+					isDisplayed = isDisplayed(by, 1);
+				}
+
+
+				if (noActive || isDisplayed)
+					break;
+				else
+					count++;
+			}
+			else
+				count++;
+		}
+		if(count>seconds)
+			throw new Exception("The ajax calls for "+pageName+" could not be completed in "+seconds+" seconds");
+
+	}
+	
+	public WebElement getWebElement(By by)
+	{
+		return driver.findElement(by);
+	}
+	
+	public void jsClick(By by)
+	{
+		((JavascriptExecutor) driver)
+		.executeScript("arguments[0].click()", getWebElement(by));
 	}
 
 
+	
+	
+	
+	public void highlightElement(WebElement element)
+	{
+		JavascriptExecutor jse = (JavascriptExecutor) driver;
+
+		// Add the highlight
+		jse.executeScript("arguments[0].setAttribute('style', 'border: solid 5px green');", element);
+
+		try {
+			// Wait for a specified time (e.g., 500 milliseconds)
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		// Remove the highlight
+		jse.executeScript("arguments[0].setAttribute('style', '');", element);
+
+		
+	}
+	
+	
+	
+	public void highlightElementAfterAction(WebElement element)
+	{
+		JavascriptExecutor jse = (JavascriptExecutor)driver;
+		jse.executeScript("arguments[0].setAttribute('style','border: solid 5px green');", element);
+
+		try {
+			// Wait for a specified time (e.g., 500 milliseconds)
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		// Remove the highlight
+		jse.executeScript("arguments[0].setAttribute('style', '');", element);
+
+	}
+	
+	public String getAttribute(By by, String attributeName)
+	{
+		return getWebElement(by).getAttribute(attributeName);
+	}	
+	
+	public String getText(By by)
+	{
+		return getWebElement(by).getText();
+	}
+	
+	public WebElement findElement(By locator) {
+		return driver.findElement(locator);
+	}
+	
+	public String getFirstSelectedOptionFromDropdown(By by, String elementName, String pageName) throws Exception
+	{
+		if(elementName==null)
+			throw new Exception("Element name should not be null");
+		if(pageName==null)
+			throw new Exception("Page name should not be null");
+		String desiredValue="";
+		try
+		{
+			waitTillPageLoad(by, 30, pageName);
+			Select select = new Select(getWebElement(by));
+			desiredValue = select.getFirstSelectedOption().getText();
+		}
+		catch(Exception e)
+		{
+			throw new Exception(elementName+" is not displayed on "+pageName);
+		}
+		return desiredValue;
+	}
+
+// here above to  it
 	public WebElement totalDoctorTextIsPresent(WebDriver driver) {
 		WebElement totalDoctorTextWebElement = driver.findElement(totalDoctortextElement);
-		commonEvents.highlightElement(totalDoctorTextWebElement);
+		highlightElement(totalDoctorTextWebElement);
 		return totalDoctorTextWebElement; 
 	}
 
 	public Boolean verifyAllFieldIsPresent() throws Exception {
 		Boolean allFieldIsPresent = false;
 		try {
-			if(commonEvents.isDisplayed(selectCounterPopupElement)&&
-					commonEvents.isDisplayed(new1TextElement)&&
-					commonEvents.isDisplayed(new2TextElement)&&
-					commonEvents.isDisplayed(new3TextElement)&&
-					commonEvents.isDisplayed(old1TextElement)&&
-					commonEvents.isDisplayed(opdCounterTextElement)) {
+			if(isDisplayed(selectCounterPopupElement)&&
+					isDisplayed(new1TextElement)&&
+					isDisplayed(new2TextElement)&&
+					isDisplayed(new3TextElement)&&
+					isDisplayed(old1TextElement)&&
+					isDisplayed(opdCounterTextElement)) {
 
 				allFieldIsPresent = true;
 			}	
@@ -88,7 +315,7 @@ public class LocatorsFactory {
 
 	public WebElement addNewButtonIsPresent(WebDriver driver) {
 		WebElement addNewPatientButtonWebElement = driver.findElement(addNewPatientButtonElement);
-		commonEvents.highlightElementAfterAction(addNewPatientButtonWebElement);
+		highlightElementAfterAction(addNewPatientButtonWebElement);
 		return addNewPatientButtonWebElement; 
 	}
 
@@ -100,9 +327,9 @@ public class LocatorsFactory {
 	public String verifyFirstNameTextValueIsPresent() throws Exception {
 		String firstNameTextfieldValue = "";
 		try {
-			if(commonEvents.isDisplayed(firstNameTextFieldElement))
+			if(isDisplayed(firstNameTextFieldElement))
 			{
-				firstNameTextfieldValue = commonEvents.getAttribute(firstNameTextFieldElement, "value");
+				firstNameTextfieldValue = getAttribute(firstNameTextFieldElement, "value");
 				System.out.println("firstName Text value is  : " + firstNameTextfieldValue);
 			}
 		}catch(Exception e) {
@@ -114,12 +341,12 @@ public class LocatorsFactory {
 	public String verifyRegisterOnlyButtonIsPresent() throws Exception {
 		String registerOnlyButtonIsPresent = "";
 		try {
-			if(commonEvents.isDisplayed(registerOnlyButtonElement))
+			if(isDisplayed(registerOnlyButtonElement))
 			{
-				registerOnlyButtonIsPresent = commonEvents.getText(registerOnlyButtonElement);
+				registerOnlyButtonIsPresent = getText(registerOnlyButtonElement);
 				System.out.println("text value of register Only Button : " + registerOnlyButtonIsPresent);
-				WebElement registerOnlyButtonWebElement = commonEvents.findElement(registerOnlyButtonToHighlight);
-				commonEvents.highlightElementAfterAction(registerOnlyButtonWebElement);
+				WebElement registerOnlyButtonWebElement = findElement(registerOnlyButtonToHighlight);
+				highlightElementAfterAction(registerOnlyButtonWebElement);
 			}
 		}catch(Exception e) {
 			throw e;
@@ -130,9 +357,9 @@ public class LocatorsFactory {
 	public String verifyIndiaIsPresent() throws Exception {
 		String selectedCountryValue = "";
 		try {
-			if(commonEvents.isDisplayed(countryDropdownByElement))
+			if(isDisplayed(countryDropdownByElement))
 			{
-				selectedCountryValue = commonEvents.getFirstSelectedOptionFromDropdown(countryDropdownByElement, "elementName", "pageName");
+				selectedCountryValue = getFirstSelectedOptionFromDropdown(countryDropdownByElement, "elementName", "pageName");
 				System.out.println("selected dropdown value is  : " + selectedCountryValue);
 			}
 		}catch(Exception e) {
@@ -145,12 +372,12 @@ public class LocatorsFactory {
 	public String verifyErrorMessageIsPresent() throws Exception {
 		String errorMessageValue = "";
 		try {
-			if(commonEvents.isDisplayed(errorMessageOfRegisterBillingByElement))
+			if(isDisplayed(errorMessageOfRegisterBillingByElement))
 			{
-				errorMessageValue =  commonEvents.getText(errorMessageOfRegisterBillingByElement);
+				errorMessageValue =  getText(errorMessageOfRegisterBillingByElement);
 				System.out.println("error message validation by Locators factory class : " + errorMessageValue);
-				commonEvents.jsClick(errorMessageCloseButton);
-				commonEvents.jsClick(closeButtonOfAddNewpatientpage);
+				jsClick(errorMessageCloseButton);
+				jsClick(closeButtonOfAddNewpatientpage);
 			}
 		}catch(Exception e) {
 			throw e;
@@ -161,25 +388,25 @@ public class LocatorsFactory {
 	public Boolean highLightPresenceOfAllFieldInDispensaryMenu() throws Exception {
 		Boolean highlightPresenceOfElement=false;
 		try {
-			if(commonEvents.isDisplayed(prescriptionSubMenu)&&
-					commonEvents.isDisplayed(saleSubMenu)&&
-					commonEvents.isDisplayed(stockSubMenu)&&
-					commonEvents.isDisplayed(counterSubMenu)&&
-					commonEvents.isDisplayed(reportsSubMenu)&&
-					commonEvents.isDisplayed(patientConsumptionSubMenu)) {
+			if(isDisplayed(prescriptionSubMenu)&&
+					isDisplayed(saleSubMenu)&&
+					isDisplayed(stockSubMenu)&&
+					isDisplayed(counterSubMenu)&&
+					isDisplayed(reportsSubMenu)&&
+					isDisplayed(patientConsumptionSubMenu)) {
 
 				WebElement prescriptionSubMenuWebElement = driver.findElement(prescriptionSubMenu);
-				commonEvents.highlightElementAfterAction(prescriptionSubMenuWebElement);
+				highlightElementAfterAction(prescriptionSubMenuWebElement);
 				WebElement saleSubMenuWebElement = driver.findElement(saleSubMenu);
-				commonEvents.highlightElementAfterAction(saleSubMenuWebElement);
+				highlightElementAfterAction(saleSubMenuWebElement);
 				WebElement stockSubMenuWebElement = driver.findElement(stockSubMenu);
-				commonEvents.highlightElementAfterAction(stockSubMenuWebElement);
+				highlightElementAfterAction(stockSubMenuWebElement);
 				WebElement counterSubMenuWebElement = driver.findElement(counterSubMenu);
-				commonEvents.highlightElementAfterAction(counterSubMenuWebElement);
+				highlightElementAfterAction(counterSubMenuWebElement);
 				WebElement reportsSubMenuWebElement = driver.findElement(reportsSubMenu);
-				commonEvents.highlightElementAfterAction(reportsSubMenuWebElement);
+				highlightElementAfterAction(reportsSubMenuWebElement);
 				WebElement patientConsumptionSubMenuWebElement = driver.findElement(patientConsumptionSubMenu);
-				commonEvents.highlightElementAfterAction(patientConsumptionSubMenuWebElement);
+				highlightElementAfterAction(patientConsumptionSubMenuWebElement);
 
 				highlightPresenceOfElement= true;
 			}	
@@ -193,11 +420,11 @@ public class LocatorsFactory {
 	public Boolean verifyFieldIsNotPresentInDispensaryMenu() throws Exception {
 		Boolean highlightDispensaryNavigationMenu=false;
 		try {
-			if(!(commonEvents.isDisplayed(prescriptionSubMenu)&&
-					commonEvents.isDisplayed(saleSubMenu))) {
+			if(!(isDisplayed(prescriptionSubMenu)&&
+					isDisplayed(saleSubMenu))) {
 
 				WebElement dispensaryNavigationMenuWebElement = driver.findElement(dispensaryLeftNavigationMenu);
-				commonEvents.highlightElementAfterAction(dispensaryNavigationMenuWebElement);
+				highlightElementAfterAction(dispensaryNavigationMenuWebElement);
 
 				highlightDispensaryNavigationMenu = true;
 			}	
@@ -211,10 +438,10 @@ public class LocatorsFactory {
 	public Boolean settingModuleIsPresent() throws Exception {
 		Boolean settingModuleIsPresent = false;
 		try {
-			if(commonEvents.isDisplayed(settingLeftNavigationMenu)) {
+			if(isDisplayed(settingLeftNavigationMenu)) {
 				
 				WebElement settingLeftNavigationMenuWebElement = driver.findElement(settingLeftNavigationMenu);
-				commonEvents.highlightElementAfterAction(settingLeftNavigationMenuWebElement);
+				highlightElementAfterAction(settingLeftNavigationMenuWebElement);
 				
 				settingModuleIsPresent = true;
 			}	
