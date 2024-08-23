@@ -20,8 +20,8 @@ public class yakshaHealthAppTestCase extends AppTestBase
 {
 	Map<String, String> configData;
 	Map<String, String> loginCredentials;
-	String expectedDataFilePath = testDataFilePath + "expected_data.json";
-	String loginFilePath = loginDataFilePath + "Login.json";
+	String expectedDataFilePath = testDataFilePath + "expected_data.xlsx";
+	String loginFilePath = loginDataFilePath + "Login.xlsx";
 	StartupPage startupPage;
 	yakshaHealthAppPages yakshaHealthAppInstance;
 	LocatorsFactory locatorsFactoryInstance;
@@ -30,7 +30,7 @@ public class yakshaHealthAppTestCase extends AppTestBase
 	@Parameters({"browser", "environment"})
 	@BeforeClass(alwaysRun = true)
 	public void initBrowser(String browser, String environment) throws Exception {
-		configData = new FileOperations().readJson(config_filePath, environment);
+		configData = new FileOperations().readExcelPOI(config_filePath, environment);
 		configData.put("url", configData.get("url").replaceAll("[\\\\]", ""));
 		configData.put("browser", browser);
 
@@ -46,10 +46,10 @@ public class yakshaHealthAppTestCase extends AppTestBase
 		yakshaHealthAppInstance = new yakshaHealthAppPages(driver);
 		locatorsFactoryInstance = new LocatorsFactory(driver);
 
-		Map<String, String> loginData = new FileOperations().readJson(loginFilePath, "credentials");
+		Map<String, String> loginData = new FileOperations().readExcelPOI(loginFilePath, "credentials");
 		Assert.assertTrue(yakshaHealthAppInstance.loginToHealthAppByGivenValidCredetial(loginData),"Login failed, Invalid credentials ! Please check manually");
 
-		Map<String, String> expectedData = new FileOperations().readJson(expectedDataFilePath, "healthApp");
+		Map<String, String> expectedData = new FileOperations().readExcelPOI(expectedDataFilePath, "healthApp");
 		Assert.assertEquals(yakshaHealthAppInstance.verifyTitleOfThePage(),expectedData.get("dasboardTitle")) ;
 		Assert.assertEquals(yakshaHealthAppInstance.verifyURLOfThePage(),expectedData.get("pageUrl")) ;
 		Assert.assertTrue(locatorsFactoryInstance.totalDoctorTextIsPresent(driver).isDisplayed(), "total doctors text is not present in the current page, Please check manually");
@@ -69,7 +69,7 @@ public class yakshaHealthAppTestCase extends AppTestBase
 		yakshaHealthAppInstance = new yakshaHealthAppPages(driver);
 		locatorsFactoryInstance = new LocatorsFactory(driver);
 
-		Map<String, String> expectedData = new FileOperations().readJson(expectedDataFilePath, "healthApp");
+		Map<String, String> expectedData = new FileOperations().readExcelPOI(expectedDataFilePath, "healthApp");
 		Assert.assertEquals(yakshaHealthAppInstance.performKeyBoardOperationToOpenAddNewPatientPopup(),expectedData.get("addNewpatientPopupTextValue"), "add New patient is not present, please check manually!") ;
 		Assert.assertTrue(locatorsFactoryInstance.registerAndBillingButtonIsPresent(driver).isDisplayed(), "total doctors text is not present in the current page, Please check manually");
 	}
@@ -79,7 +79,7 @@ public class yakshaHealthAppTestCase extends AppTestBase
 		yakshaHealthAppInstance = new yakshaHealthAppPages(driver);
 		locatorsFactoryInstance = new LocatorsFactory(driver);
 
-		Map<String, String> expectedData = new FileOperations().readJson(expectedDataFilePath, "addNewPatientPopup");
+		Map<String, String> expectedData = new FileOperations().readExcelPOI(expectedDataFilePath, "addNewPatientPopup");
 		Assert.assertEquals(yakshaHealthAppInstance.fillTheTextFieldInAddNewPatientPopup(expectedData), expectedData.get("firstName"));
 		Assert.assertEquals(locatorsFactoryInstance.verifyFirstNameTextValueIsPresent(), expectedData.get("firstName"));
 	}
@@ -89,7 +89,7 @@ public class yakshaHealthAppTestCase extends AppTestBase
 		yakshaHealthAppInstance = new yakshaHealthAppPages(driver);
 		locatorsFactoryInstance = new LocatorsFactory(driver);
 
-		Map<String, String> expectedData = new FileOperations().readJson(expectedDataFilePath, "addNewPatientPopup");
+		Map<String, String> expectedData = new FileOperations().readExcelPOI(expectedDataFilePath, "addNewPatientPopup");
 
 		Assert.assertEquals(yakshaHealthAppInstance.verifyFirstNameIsPresent(), expectedData.get("firstName"));
 		Assert.assertEquals(yakshaHealthAppInstance.verifyMiddleNameIsPresent(), expectedData.get("middleName"));
@@ -105,7 +105,7 @@ public class yakshaHealthAppTestCase extends AppTestBase
 		yakshaHealthAppInstance = new yakshaHealthAppPages(driver);
 		locatorsFactoryInstance = new LocatorsFactory(driver); 
 
-		Map<String, String> expectedData = new FileOperations().readJson(expectedDataFilePath, "addNewPatientPopup");
+		Map<String, String> expectedData = new FileOperations().readExcelPOI(expectedDataFilePath, "addNewPatientPopup");
 		Assert.assertEquals(yakshaHealthAppInstance.verifyIndiaIsSelectedFromCountryDropdown(expectedData), expectedData.get("selectedCountryName"), "selected country is not matching with expected, please check manually!");
 		Assert.assertEquals(locatorsFactoryInstance.verifyIndiaIsPresent(), expectedData.get("selectedCountryName"), "selected country is not matching with expected, please check manually!");
 	}
@@ -115,7 +115,7 @@ public class yakshaHealthAppTestCase extends AppTestBase
 		yakshaHealthAppInstance = new yakshaHealthAppPages(driver);
 		locatorsFactoryInstance = new LocatorsFactory(driver);
 
-		Map<String, String> expectedData = new FileOperations().readJson(expectedDataFilePath, "addNewPatientPopup");
+		Map<String, String> expectedData = new FileOperations().readExcelPOI(expectedDataFilePath, "addNewPatientPopup");
 		Assert.assertEquals(yakshaHealthAppInstance.validateErrorMessageWhenClickOnRegisterBillingButton(), expectedData.get("errorMessageOfRegisterBilling"), "Error Message is not matching with expected, please check manually!");
 		Assert.assertEquals(locatorsFactoryInstance.verifyErrorMessageIsPresent(), expectedData.get("errorMessageOfRegisterBilling"), "Error Message is not matching with expected, please check manually!");
 	}
@@ -150,8 +150,7 @@ public class yakshaHealthAppTestCase extends AppTestBase
 	public void searchForApatientAndViewDetailsOfSelectedPatient() throws Exception {
 		yakshaHealthAppInstance = new yakshaHealthAppPages(driver);
 		locatorsFactoryInstance = new LocatorsFactory(driver);
-		String expectedDataFilePath = testDataFilePath+"expected_data.json";
-		Map<String, String> expectedData = new FileOperations().readJson(expectedDataFilePath, "YakshaHealthApp");
+		Map<String, String> expectedData = new FileOperations().readExcelPOI(expectedDataFilePath, "YakshaHealthApp");
 		Assert.assertTrue(yakshaHealthAppInstance.searchForPatientAndViewDetailsOfSelectedPatient(expectedData), "User is not able to view the details of the patient, please check manually");
 		Assert.assertTrue(locatorsFactoryInstance.admittingDocFieldIsPresent(driver).isDisplayed(), "AdmittingDoc field is not present in the current page, Please check manually");
 	}
@@ -184,7 +183,7 @@ public class yakshaHealthAppTestCase extends AppTestBase
 	public void  verifyTooltipOfAnElement() throws Exception {
 		yakshaHealthAppInstance = new yakshaHealthAppPages(driver);
 		locatorsFactoryInstance = new LocatorsFactory(driver);
-		Map<String, String> expectedData = new FileOperations().readJson(expectedDataFilePath, "KeyBoardTooltip");
+		Map<String, String> expectedData = new FileOperations().readExcelPOI(expectedDataFilePath, "KeyBoardTooltip");
 		Assert.assertEquals(yakshaHealthAppInstance.verifyToolTipOfAnElement(), expectedData.get("TooltipValue"),"Verification failed, please check manually");
 	    Assert.assertTrue(locatorsFactoryInstance.tooltipTextIsPresent(driver).isDisplayed(), "Tooltip is not present in the current page, Please check manually");
 	}

@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.example</groupId>
-	<artifactId>HealthApp_1</artifactId>
+	<artifactId>HealthApp_MockAssessment_PL2</artifactId>
 	<version>1.0-SNAPSHOT</version>
 
 	<properties>
@@ -117,6 +117,12 @@
 			<artifactId>netty-handler</artifactId>
 			<version>4.1.93.Final</version>
 		</dependency>
+		
+		<dependency>
+        	<groupId>org.apache.poi</groupId>
+        	<artifactId>poi</artifactId>
+        	<version>5.2.3</version>
+    	</dependency>
 
 	</dependencies>
 	<build>

@@ -129,8 +129,8 @@ public class yakshaHealthAppPages extends StartupPage {
 
 	/**@Test4
 	 * about this method fillTheTextFieldInAddNewPatientPopup() 
-	 * @param : get the data from json file as type Map<String, String> expectedData
-	 * @description : enter value in text field of Add New Patient as per json expected data and fetch the value of that text field ,
+	 * @param : get the data from excel file as type Map<String, String> expectedData
+	 * @description : enter value in text field of Add New Patient as per excel expected data and fetch the value of that text field ,
 	 * @return : fetch the value text field as string type
 	 * @author : Yaksha
 	 */
@@ -199,8 +199,8 @@ public class yakshaHealthAppPages extends StartupPage {
 
 	/**@Test6
 	 * about this method verifyIndiaIsSelectedFromCountryDropdown() 
-	 * @param : get the data from json file as type Map<String, String> expectedData
-	 * @description : it will select the country as per json expected data
+	 * @param : get the data from excel file as type Map<String, String> expectedData
+	 * @description : it will select the country as per excel expected data
 	 * @return : String
 	 * @author : Yaksha
 	 */
