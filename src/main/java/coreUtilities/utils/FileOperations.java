@@ -46,7 +46,23 @@ public class FileOperations
      */
 	public Map<String, String> readExcelPOI(String excelFilePath, String sheetName) throws Exception
     {
-       return null;
+	    
+       fillo = new Fillo();
+		connection = fillo.getConnection(file);
+		Recordset rs = connection.executeQuery(readQuery);
+		Map<String, String> excelData = new HashMap<String, String>();
+		ArrayList<String> fieldNames = rs.getFieldNames(); 
+		while(rs.next())
+		{
+			fieldNames.forEach(s->{
+				try {
+					excelData.put(s, rs.getField(s));
+				} catch (FilloException e) {
+					e.printStackTrace();
+				}
+			});
+		}
+		return excelData;
     }
 	
 }
