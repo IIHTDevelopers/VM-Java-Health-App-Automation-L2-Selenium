@@ -9,61 +9,42 @@ import org.openqa.selenium.WebDriver;
 public class yakshaHealthAppPages extends StartupPage {
 	
 
-	By usernameTextbox = By.xpath("");
-	By passwordTextbox = By.xpath("");
-	
-	By registeredPatientTextElement = By.xpath("");
-	By billingNavigationMenuElement = By.xpath("");
-	By selectCounterPopupElement = By.xpath("");
-	By new1TextElement = By.xpath("");
-	By new2TextElement = By.xpath("");
-	By new3TextElement = By.xpath("");
-	By old1TextElement = By.xpath("");
-	By opdCounterTextElement = By.xpath("");
-	By addNewButtonElement = By.xpath("");
-	By addNewPatientTextElement = By.xpath("");
+	By usernameTextbox = By.xpath("//input[@id='username_id']");
+	By passwordTextbox = By.xpath("//input[@id='password']");
+	By signInButton = By.xpath("//button[@id='login']");
+	By registeredPatientTextElement = By.xpath("//p[contains(text(), 'Registered Patient')]");
+	By billingNavigationMenuElement = By.xpath("(//span[contains(text(), 'Billing')])[1]");
+	By selectCounterPopupElement = By.xpath("//h3//span[contains(text(), 'Select Counter')]");
+	By new1TextElement = By.xpath("//h5[contains(text(), 'New-1')]");
+	By new2TextElement = By.xpath("//h5[contains(text(), 'New-2')]");
+	By new3TextElement = By.xpath("//h5[contains(text(), 'New-3')]");
+	By old1TextElement = By.xpath("//h5[contains(text(), 'Old-1')]");
+	By opdCounterTextElement = By.xpath("//h5[contains(text(), 'OPD-Counter')]");
+	By addNewButtonElement = By.xpath("//button[contains(text(), 'Add New Patient')]");
+	By addNewPatientTextElement = By.xpath("//span[contains(text(), 'Add New Patient')]");
 
-	By firstNameTextFieldElement = By.xpath("");
-	By middleNameTextFieldElement = By.xpath("");
-	By lastNameTextfieldElement = By.xpath("");
-	By ageTextfieldElement = By.xpath("");
-	By contactNumberTextfieldElement = By.xpath("");
+	By firstNameTextFieldElement = By.xpath("//input[@id='newPatFirstName']");
+	By middleNameTextFieldElement = By.xpath("//input[@id='newPatMiddleName']");
+	By lastNameTextfieldElement = By.xpath("//input[@id='newPatLastName']");
+	By ageTextfieldElement = By.xpath("//input[@id='age']");
+	By contactNumberTextfieldElement = By.xpath("//input[@id='phoneNo']");
 
-	By countryDropdownByElement = By.xpath("");
-	By registerAndBillingButtonElement = By.xpath("");
-	By errorMessageOfRegisterBillingByElement = By.xpath("");
-	By closeButtonOfAddNewpatientpage = By.xpath("");
+	By countryDropdownByElement = By.xpath("//select[@id='ddlCountry']");
+	By registerAndBillingButtonElement = By.xpath("//button[contains(text(), 'Register & Billing')]");
+	By errorMessageOfRegisterBillingByElement = By.xpath("//p[contains(text(), 'Some of the inputs are invalid. Please check and try again. !')]");
+	By closeButtonOfAddNewpatientpage = By.xpath("//button[contains(text(), 'Close')]");
 
-	By dispensaryToggle = By.xpath("");
-	By prescriptionSubMenu = By.xpath("");
-	By saleSubMenu = By.xpath("");
-	By stockSubMenu = By.xpath("");
-	By counterSubMenu = By.xpath("");
-	By reportsSubMenu = By.xpath("");
-	By patientConsumptionSubMenu = By.xpath("");
+	By dispensaryToggle = By.xpath("//span[@data-target='#Dispensary']");
+	By prescriptionSubMenu = By.xpath("//ul[@id='Dispensary']//li//a//span[contains(text(),'Prescription')]");
+	By saleSubMenu = By.xpath("//ul[@id='Dispensary']//li//a//span[contains(text(),'Sale')]");
+	By stockSubMenu = By.xpath("//ul[@id='Dispensary']//li//a//span[contains(text(),'Stock')]");
+	By counterSubMenu = By.xpath("//ul[@id='Dispensary']//li//a//span[contains(text(),'Counter')]");
+	By reportsSubMenu = By.xpath("//ul[@id='Dispensary']//li//a//span[contains(text(),'Reports')]");
+	By patientConsumptionSubMenu = By.xpath("//ul[@id='Dispensary']//li//a//span[contains(text(),'Patient Consumption')]");
 
-	
-	By dispensaryLeftNavigationMenu = By.xpath("");
-	By settingLeftNavigationMenu = By.xpath("");
-	By usernameTextfield=By.id("");
-	By passwordTextfield=By.id("");
-	By signInButton=By.id("l");
-	By billingTab=By.xpath("");
-	By new1Counter=By.xpath("");
-	By ipBillingTab=By.xpath("");
-	By searchBar=By.id("");
-	By viewDetailsButton=By.xpath("");
-	By calendarField=By.xpath("");
-	By editItemsButton=By.xpath("");
-	By checkBox=By.xpath("");
-	By doctorTab=By.xpath("");
-	By cancelButton=By.xpath("");
-	By settingsButton=By.xpath("");
-	By securityButton=By.xpath("");
-	By deactivateButton=By.xpath("");
-	By appointmentTab=By.xpath("");
-	By keyboardButton=By.xpath("");
-	By tooltip=By.xpath("");
+	//	By dispensaryLeftNavigationMenu = By.xpath("//a[@class='left-nav-active']//span[contains(text(), 'Dispensary')]");
+	By dispensaryLeftNavigationMenu = By.xpath("//a[@href='#/Dispensary']//span[contains(text(), 'Dispensary')]");
+	By settingLeftNavigationMenu = By.xpath("//a[@href='#/Settings']//span[contains(text(), 'Settings')]");
 
 
 	String pageName = this.getClass().getSimpleName();
@@ -91,7 +72,14 @@ public class yakshaHealthAppPages extends StartupPage {
 	 * @author : Yaksha
 	 */
 	public String verifyTitleOfThePage() throws Exception {
-		return "";
+		String pageTitle = "";
+		try {
+			pageTitle = commonEvents.getTitle();
+			System.out.println("title of the page is  :" + pageTitle );
+		}catch(Exception e) {
+			throw e;
+		}	
+		return pageTitle;
 	}
 
 	/**@Test1.3
